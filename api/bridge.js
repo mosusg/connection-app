@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 
       bridge = JSON.parse(rawOutput);
       // Try parsing JSON from model output
-      bridge = JSON.parse(data.choices[0].message.content);
+      //bridge = JSON.parse(data.choices[0].message.content);
     } catch (parseErr) {
       console.error("Failed to parse AI output as JSON:", parseErr);
       return res.status(200).json(generateFallback(topicA, topicB));

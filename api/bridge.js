@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
-          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Avoid general concepts like "science", "technology", "innovation", etc. Provide each step as: number, entity name, brief description of connection Return plain text.` }
+          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Under zero circumstances do you use general/abstract concepts (i.e: Science, mathematics, history, etc.) or undescreptive grouping of people (i.e: Game developers or Electricians). Instead, use exact nouns to refer to the subject such as the precise name of the person, object, place, or event. Provide each step as: number, entity name, brief description of connection Return plain text.` }
         ],
         temperature: 0.8,
         max_tokens: 300

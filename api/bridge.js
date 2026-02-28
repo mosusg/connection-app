@@ -30,7 +30,15 @@ export default async function handler(req, res) {
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
-          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Avoid general concepts like "science", "technology", "innovation", etc. Provide each step as: number, entity name, brief description of connection Return plain text.` }
+          { role: "user", content: `Connect "${topicA}" to "${topicB}" in exactly 10 steps.
+1. Each step must use a specific, real, verifiable person, place, object, or event. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians).
+2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful.
+3. Each step must progress linearly toward the final topic, with no loops, backtracking, or steps that do not advance the bridge.
+4. Clearly describe how each step connects to the previous step, emphasizing real-world causal, historical, or contextual relationships.
+5. Provide each step as: number, entity name, brief description of connection Return plain text.
+6. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end). 
+7. Avoid generic filler entities — each step must be meaningful and precise.
+8. Avoid generic filler entities — each step must be meaningful and precise.` }
         ],
         temperature: 0.8,
         max_tokens: 300

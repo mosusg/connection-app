@@ -11,7 +11,7 @@ document.getElementById('generate').onclick = async () => {
   resultsDiv.textContent = "Generating...";
 
   try {
-    const res = await fetch('bridge.js', {
+    const res = await fetch('/api/bridge.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ topicA, topicB })

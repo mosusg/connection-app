@@ -1,21 +1,23 @@
 // /api/bridge.js
-export default async function handler(req, res) {
-  console.log("Handler called");
 
+export default async function handler(req, res) {
+  console.log("Bridge API called");
+
+  // Method check
   if (req.method !== "POST") {
-    return res.status(405).send("Method Not Allowed");
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { topicA, topicB } = req.body;
-  console.log("Received topics:", topicA, topicB);
+  const { topicA, topicB } = req.body || {};
 
   if (!topicA || !topicB) {
-    return res.status(400).send("Both topics are required.");
+    return res.status(400).json({ error: "Both topics are required." });
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
+
   if (!apiKey) {
-    console.log("No OPENAI_API_KEY found — using fallback");
+    console.warn("OPENAI_API_KEY missing — using fallback");
     return res.status(200).json(generateFallback(topicA, topicB));
   }
 
@@ -23,54 +25,77 @@ export default async function handler(req, res) {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
-          { role: "user", content: `Connect "${topicA}" to "${topicB}" in exactly 10 steps.
-1. Each step must use a specific, real, verifiable person, place, object, or event. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians).
-2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful.
-3. Each step must progress linearly toward the final topic, with no loops, backtracking, or steps that do not advance the bridge.
-4. Clearly describe how each step connects to the previous step, emphasizing real-world causal, historical, or contextual relationships.
-5. Provide each step as: number, entity name, brief description of connection Return plain text.
-6. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end). 
-7. Avoid generic filler entities — each step must be meaningful and precise.
-8. Avoid generic filler entities — each step must be meaningful and precise.` }
-        ],
         temperature: 0.8,
-        max_tokens: 300
+        max_tokens: 300,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You create a clear, logical 10-step bridge between two topics."
+          },
+          {
+            role: "user",
+            content: `
+Connect "${topicA}" to "${topicB}" in exactly 10 steps.
+
+Rules:
+1. Each step must be a specific, real, verifiable person, place, object, or event.
+2. No abstract concepts or vague groups.
+3. No name-based shortcuts or puns.
+4. Each step must logically connect to the previous one.
+5. Step 1 must be "${topicA}".
+6. Step 10 must be "${topicB}".
+7. Format as plain text:
+   number. Entity – brief explanation of connection
+`
+          }
+        ]
       })
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      console.error("OpenAI API error:", text);
+      const errorText = await response.text();
+      console.error("OpenAI API error:", response.status, errorText);
       return res.status(200).json(generateFallback(topicA, topicB));
     }
 
     const data = await response.json();
-    const textOutput = data.choices?.[0]?.message?.content || "";
-    console.log("AI Output:", textOutput);
 
-    // Return text to frontend
+    const textOutput =
+      data?.choices?.[0]?.message?.content?.trim() || "";
+
+    if (!textOutput) {
+      console.warn("Empty AI response — using fallback");
+      return res.status(200).json(generateFallback(topicA, topicB));
+    }
+
+    console.log("Bridge generated successfully");
+
     return res.status(200).json({ bridge: textOutput });
 
   } catch (err) {
-    console.error("OpenAI API call failed:", err);
+    console.error("OpenAI request failed:", err);
     return res.status(200).json(generateFallback(topicA, topicB));
   }
 }
 
-// Fallback: returns plain text bridge
+
+// Fallback generator (plain text)
 function generateFallback(a, b) {
   console.log("Generating fallback bridge");
-  let text = `1. ${a} – Start with ${a}\n`;
+
+  let text = `1. ${a} – Starting point\n`;
+
   for (let i = 2; i <= 9; i++) {
-    text += `${i}. Entity ${i-1} – Connects step ${i-1} to step ${i}\n`;
+    text += `${i}. Entity ${i - 1} – Logical progression step\n`;
   }
-  text += `10. ${b} – End with ${b}`;
+
+  text += `10. ${b} – Final destination`;
+
   return { bridge: text };
 }

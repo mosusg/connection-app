@@ -68,7 +68,13 @@ export default async function handler(req, res) {
       let rawOutput = data.choices[0].message.content;
 
       // Remove code fences if present
-      rawOutput = rawOutput.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+      rawOutput = rawOutput
+        .replace(/^```json\s*/i, "")  // ```json at start
+        .replace(/^```\s*/i, "")      // ``` at start
+        .replace(/```$/i, "")         // ``` at end
+        .replace(/^`+/i, "")          // any stray backticks at start
+        .replace(/`+$/i, "")          // any stray backticks at end
+        .trim();
 
       bridge = JSON.parse(rawOutput);
       // Try parsing JSON from model output

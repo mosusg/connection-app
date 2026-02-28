@@ -35,7 +35,7 @@ export default async function handler(req, res) {
           },
           {
             role: "user",
-            content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Under zero circumstances do you use general/abstract concepts (i.e: Science, mathematics, history, etc.) or undescreptive grouping of people (i.e: Game developers or Electricians). Instead, use exact nouns to refer to the subject such as the precise name of the person, object, place, or event. Provide each step as: number, entity name, brief description of connection. Return a JSON array with each object containing: step (number), entity (string), description (string), connection_type (start, link, end). No extra text.`
+            content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Under zero circumstances do you use general/abstract concepts (i.e: Science, mathematics, history, etc.) or undescreptive grouping of people (i.e: Game developers or Electricians). Instead, use exact nouns to refer to the subject such as the precise name of the person, object, place, or event. Provide each step as: number, entity name, brief description of connection. Return a JSON array with each object containing: step (number), entity (string), description (string), connection_type (start, link, end). No extra text and without any markdown or code fences`
           }
         ],
         temperature: 0.8,
@@ -53,6 +53,13 @@ export default async function handler(req, res) {
     let bridge = [];
 
     try {
+      // Strip ```json ... ``` or ``` around AI output
+      let rawOutput = data.choices[0].message.content;
+
+      // Remove code fences if present
+      rawOutput = rawOutput.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+
+      bridge = JSON.parse(rawOutput);
       // Try parsing JSON from model output
       bridge = JSON.parse(data.choices[0].message.content);
     } catch (parseErr) {

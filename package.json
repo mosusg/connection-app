@@ -1,0 +1,13 @@
+{
+  "name": "bridge-app",
+  "version": "1.0.0",
+  "description": "Hackathon Bridge App",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": "18.x"
+  }
+}

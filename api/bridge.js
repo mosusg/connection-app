@@ -41,11 +41,10 @@ export default async function handler(req, res) {
             3. Each step must **progress linearly toward the final topic**, with no loops, backtracking, or steps that do not advance the bridge. 
             4. Clearly describe **how each step connects to the previous step**, emphasizing real-world causal, historical, or contextual relationships. 
             5. Return **strict, valid JSON only** (no markdown, no code fences).
-              - Use double quotes for all keys and string values.
-              - No single quotes.
-              - No trailing commas.
-              - No Markdown or code fences.
-              - No extra text.
+              - Use **double quotes** for all keys and string values.
+              - Do **not** use single quotes.
+              - Do **not** include any Markdown, code fences, or backticks.
+              - No extra text outside the JSON array.            
             Each object should have: 
               - step (number), 
               - entity (string), 

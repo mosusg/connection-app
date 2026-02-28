@@ -1,21 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Bridge Generator</title>
+  <title>Bridge Builder</title>
+  <meta charset="UTF-8" />
   <style>
-    .bridge-step { margin: 6px 0; padding: 4px; }
-    .start { color: green; }
-    .link { color: blue; }
-    .end { color: red; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    input, button, select {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .slider-container {
+      margin: 20px 0;
+    }
+
+    #depthLabel {
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    #results {
+      margin-top: 30px;
+    }
+
+    ol {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Bridge Generator</h1>
-  <input id="topicA" placeholder="Topic A">
-  <input id="topicB" placeholder="Topic B">
-  <button id="generateBtn">Generate</button>
-  <div id="output"></div>
+
+  <h1>Bridge Builder</h1>
+
+  <input id="topicA" placeholder="Enter first topic" />
+  <input id="topicB" placeholder="Enter second topic" />
+
+  <div class="slider-container">
+    <label for="depthSlider">Bridge Depth</label>
+    <input type="range" id="depthSlider" min="1" max="3" value="2" />
+    <div id="depthLabel">Medium</div>
+  </div>
+
+  <button id="generateBtn">Generate Bridge</button>
+
+  <div id="results"></div>
 
   <script src="app.js"></script>
 </body>

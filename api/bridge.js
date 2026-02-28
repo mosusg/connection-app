@@ -25,20 +25,21 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo", // GPT-3.5
-        messages: [
-          { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
-          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps as a JSON array with {step, entity, description, connection_type}` }
-        ],
-        temperature: 0.8
-      })
-    });
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: "gpt-3.5-turbo",
+    messages: [
+      { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
+      { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps as JSON.` }
+    ],
+    temperature: 0.8,
+    max_tokens: 300   // <-- limits response to ~300 tokens
+  })
+});
 
     console.log("Raw response status:", response.status);
     const data = await response.json();

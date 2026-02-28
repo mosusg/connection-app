@@ -35,7 +35,18 @@ export default async function handler(req, res) {
           },
           {
             role: "user",
-            content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Under zero circumstances do you use general/abstract concepts (i.e: Science, mathematics, history, etc.) or indescreptive grouping of people (i.e: Game developers or Electricians). Instead, use exact nouns to refer to the subject such as the precise name of the person, object, place, or event. Think critically and avoid backtracking at all costs, always make each step move towards the end goal. Explicitly state the connection at each step. Provide each step as: number, entity name, brief description of connection. Return a JSON array with each object containing: step (number), entity (string), description (string), connection_type (start, link, end). No extra text and without any markdown or code fences`
+            content: `Connect "${topicA}" to "${topicB}" in exactly 10 steps. 
+            1. Each step must use a **specific, real, verifiable person, place, object, or event**. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians). 
+            2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful. 
+            3. Each step must **progress linearly toward the final topic**, with no loops, backtracking, or steps that do not advance the bridge. 
+            4. Clearly describe **how each step connects to the previous step**, emphasizing real-world causal, historical, or contextual relationships. 
+            5. Return **exact JSON only** (no markdown, no code fences). Each object should have: 
+              - step (number), 
+              - entity (string), 
+              - description (string), 
+              - connection_type (start, link, end). 
+            6. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end). 
+            7. Avoid generic filler entities — each step must be **meaningful and precise**.`
           }
         ],
         temperature: 0.8,

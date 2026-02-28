@@ -26,7 +26,12 @@ const labelMap = {
 };
 
 slider.addEventListener("input", () => {
-  depthLabel.textContent = labelMap[slider.value];
+  depthLabel.classList.add("updating");
+
+  setTimeout(() => {
+    depthLabel.textContent = labelMap[slider.value];
+    depthLabel.classList.remove("updating");
+  }, 100);
 });
 
 button.addEventListener("click", async () => {

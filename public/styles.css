@@ -1,0 +1,113 @@
+/* styles.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f8f9fc;
+  margin: 0;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  margin-top: 0;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #3a57d7;
+}
+
+.slider-container {
+  margin: 20px 0;
+}
+
+/* Smooth Slider Styling */
+#depthSlider {
+  width: 100%;
+  appearance: none;
+  height: 6px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #4a6cf7, #9f7aea);
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+/* Slider Thumb */
+#depthSlider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid #4a6cf7;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#depthSlider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+#depthSlider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid #4a6cf7;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Smooth label animation */
+.depth-label {
+  margin-top: 10px;
+  font-weight: bold;
+  opacity: 1;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.depth-label.updating {
+  opacity: 0.4;
+  transform: translateY(-3px);
+}
+
+#results {
+  margin-top: 30px;
+}
+
+ol {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}

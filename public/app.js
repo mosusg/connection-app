@@ -19,18 +19,7 @@ document.getElementById("generateBtn").onclick = async function() {
     });
 
     const data = await response.json();
-    const bridge = data.bridge || [];
-
-    // Clear previous output
-    outputDiv.innerHTML = "";
-
-    bridge.forEach(step => {
-      const stepEl = document.createElement("div");
-      stepEl.className = "bridge-step " + step.connection_type;
-      stepEl.innerHTML = `<strong>${step.step}. ${step.entity}</strong> – ${step.description}`;
-      outputDiv.appendChild(stepEl);
-    });
-
+    outputDiv.textContent = data.bridge || "No bridge generated.";
   } catch (err) {
     console.error("Fetch error:", err);
     outputDiv.textContent = "Failed to generate bridge.";

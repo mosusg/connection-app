@@ -29,17 +29,11 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [
-          {
-            role: "system",
-            content: "You are an assistant creating a 10-step bridge connecting two topics. Each step should be a specific person, place, object, or event."
-          },
-          {
-            role: "user",
-            content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Under zero circumstances do you use general/abstract concepts (i.e: Science, mathematics, history, etc.) or undescreptive grouping of people (i.e: Game developers or Electricians). Instead, use exact nouns to refer to the subject such as the precise name of the person, object, place, or event. Provide each step as: number, entity name, brief description of connection. Return a JSON array with each object containing: step (number), entity (string), description (string), connection_type (start, link, end). No extra text.`
-          }
+          { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
+          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps. Each step must use specific, real things, people, places, events, or objects. Avoid general concepts like "science", "technology", "innovation", etc. Provide each step as: number, entity name, brief description of connection Return plain text.` }
         ],
         temperature: 0.8,
-        max_tokens: 400
+        max_tokens: 300
       })
     });
 
@@ -50,18 +44,11 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    let bridge = [];
+    const textOutput = data.choices?.[0]?.message?.content || "";
+    console.log("AI Output:", textOutput);
 
-    try {
-      // Try parsing JSON from model output
-      bridge = JSON.parse(data.choices[0].message.content);
-    } catch (parseErr) {
-      console.error("Failed to parse AI output as JSON:", parseErr);
-      return res.status(200).json(generateFallback(topicA, topicB));
-    }
-
-    console.log("AI bridge generated:", bridge);
-    return res.status(200).json({ bridge });
+    // Return text to frontend
+    return res.status(200).json({ bridge: textOutput });
 
   } catch (err) {
     console.error("OpenAI API call failed:", err);
@@ -69,14 +56,13 @@ export default async function handler(req, res) {
   }
 }
 
-// Structured fallback JSON
+// Fallback: returns plain text bridge
 function generateFallback(a, b) {
   console.log("Generating fallback bridge");
-  const bridge = [];
-  bridge.push({ step: 1, entity: a, description: `Start with ${a}`, connection_type: "start" });
+  let text = `1. ${a} – Start with ${a}\n`;
   for (let i = 2; i <= 9; i++) {
-    bridge.push({ step: i, entity: `Entity ${i-1}`, description: `Connects step ${i-1} to step ${i}`, connection_type: "link" });
+    text += `${i}. Entity ${i-1} – Connects step ${i-1} to step ${i}\n`;
   }
-  bridge.push({ step: 10, entity: b, description: `End with ${b}`, connection_type: "end" });
-  return { bridge };
+  text += `10. ${b} – End with ${b}`;
+  return { bridge: text };
 }

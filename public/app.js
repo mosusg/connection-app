@@ -5,28 +5,34 @@ const depthLabel = document.getElementById("depthLabel");
 const results = document.getElementById("results");
 const button = document.getElementById("generateBtn");
 
-// Map slider value to depth
-function getDepthFromSlider(value) {
-  if (value == 1) return "light";
-  if (value == 2) return "medium";
-  if (value == 3) return "in-depth";
-}
+const depthMap = {
+  1: "minimal",
+  2: "concise",
+  3: "balanced",
+  4: "detailed",
+  5: "deep",
+  6: "analytical",
+  7: "comprehensive"
+};
 
-// Update label when slider moves
+const labelMap = {
+  1: "Minimal (Very Short)",
+  2: "Concise",
+  3: "Balanced",
+  4: "Detailed",
+  5: "Deep",
+  6: "Analytical",
+  7: "Comprehensive (Very In-Depth)"
+};
+
 slider.addEventListener("input", () => {
-  const depth = getDepthFromSlider(slider.value);
-  depthLabel.textContent =
-    depth === "light"
-      ? "Light (6 steps)"
-      : depth === "medium"
-      ? "Medium (10 steps)"
-      : "In-Depth (14 steps)";
+  depthLabel.textContent = labelMap[slider.value];
 });
 
 button.addEventListener("click", async () => {
   const topicA = topicAInput.value.trim();
   const topicB = topicBInput.value.trim();
-  const depth = getDepthFromSlider(slider.value);
+  const depth = depthMap[slider.value];
 
   if (!topicA || !topicB) {
     results.innerHTML = `<div class="error">Please enter both topics.</div>`;
@@ -64,15 +70,11 @@ button.addEventListener("click", async () => {
 
 function renderSteps(steps) {
   results.innerHTML = "";
-
   const list = document.createElement("ol");
 
   steps.forEach(step => {
     const li = document.createElement("li");
-
-    // Remove manual numbering if AI included it
     const cleanStep = step.replace(/^\d+\.\s*/, "");
-
     li.textContent = cleanStep;
     list.appendChild(li);
   });

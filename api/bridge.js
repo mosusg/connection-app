@@ -1,12 +1,9 @@
-// /api/bridge.js
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { topicA, topicB, depth } = req.body || {};
-
   if (!topicA || !topicB) {
     return res.status(400).json({ error: "Both topics are required." });
   }
@@ -16,27 +13,53 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "API key not configured." });
   }
 
-  // Depth configuration
+  // Default values
   let stepCount = 10;
-  let descriptionStyle = "2–3 sentences.";
-  let maxTokens = 400;
+  let descriptionStyle = "2 clear sentences.";
+  let maxTokens = 450;
 
-  if (depth === "light") {
-    stepCount = 6;
-    descriptionStyle = "1 concise sentence.";
-    maxTokens = 250;
-  }
+  switch (depth) {
+    case "minimal":
+      stepCount = 8;
+      descriptionStyle = "1 short sentence.";
+      maxTokens = 250;
+      break;
 
-  if (depth === "medium") {
-    stepCount = 10;
-    descriptionStyle = "2–3 clear sentences.";
-    maxTokens = 450;
-  }
+    case "concise":
+      stepCount = 8;
+      descriptionStyle = "1–2 sentences.";
+      maxTokens = 350;
+      break;
 
-  if (depth === "in-depth") {
-    stepCount = 14;
-    descriptionStyle = "1–2 detailed paragraphs.";
-    maxTokens = 900;
+    case "balanced":
+      stepCount = 10;
+      descriptionStyle = "2 sentences.";
+      maxTokens = 450;
+      break;
+
+    case "detailed":
+      stepCount = 10;
+      descriptionStyle = "3–4 sentences.";
+      maxTokens = 600;
+      break;
+
+    case "deep":
+      stepCount = 12;
+      descriptionStyle = "1 well-developed paragraph.";
+      maxTokens = 750;
+      break;
+
+    case "analytical":
+      stepCount = 12;
+      descriptionStyle = "1–2 detailed paragraphs.";
+      maxTokens = 900;
+      break;
+
+    case "comprehensive":
+      stepCount = 14;
+      descriptionStyle = "2 full, detailed paragraphs.";
+      maxTokens = 1200;
+      break;
   }
 
   try {
@@ -53,8 +76,7 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content:
-              "You create smooth, logical bridges between two topics."
+            content: "You create smooth, logical bridges between topics."
           },
           {
             role: "user",
@@ -64,16 +86,13 @@ Connect "${topicA}" to "${topicB}" in exactly ${stepCount} numbered steps.
 Rules:
 - Each step must be a real, specific person, place, object, or event.
 - No abstract concepts.
-- No name-based shortcuts or puns.
-- Each step must logically and smoothly connect to the previous step.
+- Each step must logically connect to the previous step.
 - Descriptions should be ${descriptionStyle}
-- Step 1 must be "${topicA}".
-- Step ${stepCount} must be "${topicB}".
+- Step 1 must be "${topicA}"
+- Step ${stepCount} must be "${topicB}"
 
-Format exactly like:
-
+Format:
 1. Entity – description
-2. Entity – description
 ...
 ${stepCount}. Entity – description
 `
@@ -83,23 +102,16 @@ ${stepCount}. Entity – description
     });
 
     if (!response.ok) {
-      const err = await response.text();
-      console.error("OpenAI error:", err);
       return res.status(500).json({ error: "Failed to generate bridge." });
     }
 
     const data = await response.json();
     const text = data?.choices?.[0]?.message?.content?.trim();
 
-    if (!text) {
-      return res.status(500).json({ error: "Empty AI response." });
-    }
-
-    // Clean numbered lines
     const steps = text
       .split("\n")
       .map(line => line.trim())
-      .filter(line => new RegExp(`^\\d+\\.`).test(line));
+      .filter(line => /^\d+\./.test(line));
 
     if (steps.length !== stepCount) {
       return res.status(500).json({ error: "Invalid bridge format." });
@@ -108,7 +120,6 @@ ${stepCount}. Entity – description
     return res.status(200).json({ steps });
 
   } catch (err) {
-    console.error("Server error:", err);
     return res.status(500).json({ error: "Server error." });
   }
 }

@@ -73,17 +73,17 @@ export default async function handler(req, res) {
       // Strip ```json ... ``` or ``` around AI output
       let rawOutput = data.choices[0].message.content;
 
-      // Remove code fences if present
+      // Remove any Markdown/code fences or leading/trailing backticks
       rawOutput = rawOutput
-        .replace(/^```json\s*/i, "")  // ```json at start
-        .replace(/^```\s*/i, "")      // ``` at start
-        .replace(/```$/i, "")         // ``` at end
-        .replace(/^`+/i, "")          // any stray backticks at start
-        .replace(/`+$/i, "")          // any stray backticks at end
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/```$/i, "")
+        .replace(/^`+/i, "")
+        .replace(/`+$/i, "")
         .trim();
 
+      // Now parse directly (no replacing quotes)
       bridge = JSON.parse(rawOutput);
-      // Try parsing JSON from model output
       //bridge = JSON.parse(data.choices[0].message.content);
     } catch (parseErr) {
       console.error("Failed to parse AI output as JSON:", parseErr);

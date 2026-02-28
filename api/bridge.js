@@ -1,4 +1,6 @@
 // /api/bridge.js
+import JSON5 from "json5";
+
 export default async function handler(req, res) {
   console.log("Handler called");
 
@@ -36,22 +38,18 @@ export default async function handler(req, res) {
           {
             role: "user",
             content: `Connect "${topicA}" to "${topicB}" in exactly 10 steps. 
-            1. Each step must use a **specific, real, verifiable person, place, object, or event**. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians). 
-            2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful. 
-            3. Each step must **progress linearly toward the final topic**, with no loops, backtracking, or steps that do not advance the bridge. 
-            4. Clearly describe **how each step connects to the previous step**, emphasizing real-world causal, historical, or contextual relationships. 
-            5. Return **strict, valid JSON only** (no markdown, no code fences).
-              - Use **double quotes** for all keys and string values.
-              - Do **not** use single quotes.
-              - Do **not** include any Markdown, code fences, or backticks.
-              - No extra text outside the JSON array.            
-            Each object should have: 
-              - step (number), 
-              - entity (string), 
-              - description (string), 
-              - connection_type (start, link, end). 
-            6. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end). 
-            7. Avoid generic filler entities — each step must be **meaningful and precise**.`
+1. Each step must use a specific, real, verifiable person, place, object, or event. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians). 
+2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful. 
+3. Each step must progress linearly toward the final topic, with no loops, backtracking, or steps that do not advance the bridge. 
+4. Clearly describe how each step connects to the previous step, emphasizing real-world causal, historical, or contextual relationships. 
+5. Return strict, valid JSON only:
+   - Use double quotes for all keys and string values.
+   - Do not use single quotes.
+   - Do not include any Markdown, code fences, or backticks.
+   - No extra text outside the JSON array.
+Each object should have: step (number), entity (string), description (string), connection_type (start, link, end). 
+6. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end). 
+7. Avoid generic filler entities — each step must be meaningful and precise.`
           }
         ],
         temperature: 0.8,
@@ -69,7 +67,6 @@ export default async function handler(req, res) {
     let bridge = [];
 
     try {
-      // Strip ```json ... ``` or ``` around AI output
       let rawOutput = data.choices[0].message.content;
 
       // Remove any Markdown/code fences or leading/trailing backticks
@@ -81,9 +78,9 @@ export default async function handler(req, res) {
         .replace(/`+$/i, "")
         .trim();
 
-      // Now parse directly (no replacing quotes)
-      bridge = JSON.parse(rawOutput);
-      //bridge = JSON.parse(data.choices[0].message.content);
+      // Use JSON5 to parse in case GPT output has minor issues
+      bridge = JSON5.parse(rawOutput);
+
     } catch (parseErr) {
       console.error("Failed to parse AI output as JSON:", parseErr);
       return res.status(200).json(generateFallback(topicA, topicB));

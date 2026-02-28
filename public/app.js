@@ -8,10 +8,8 @@ const button = document.getElementById("generateBtn");
 /* ---------------------------
    DEPTH ZONE MAPPING
 ---------------------------- */
-
 function getDepthFromSlider(value) {
   const v = Number(value);
-
   if (v < 15) return "minimal";
   if (v < 30) return "concise";
   if (v < 50) return "balanced";
@@ -36,7 +34,6 @@ function getLabel(depth) {
 /* ---------------------------
    SMOOTH SLIDER BEHAVIOR
 ---------------------------- */
-
 function updateSliderVisual() {
   const percent = slider.value;
   slider.style.background =
@@ -46,16 +43,12 @@ function updateSliderVisual() {
   depthLabel.textContent = getLabel(depth);
 }
 
-// Initialize slider UI
 updateSliderVisual();
-
-// Update continuously as user drags
 slider.addEventListener("input", updateSliderVisual);
 
 /* ---------------------------
    GENERATE BRIDGE
 ---------------------------- */
-
 button.addEventListener("click", async () => {
   const topicA = topicAInput.value.trim();
   const topicB = topicBInput.value.trim();
@@ -71,14 +64,8 @@ button.addEventListener("click", async () => {
   try {
     const response = await fetch("/api/bridge", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        topicA,
-        topicB,
-        depth
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topicA, topicB, depth })
     });
 
     const data = await response.json();
@@ -96,21 +83,28 @@ button.addEventListener("click", async () => {
 });
 
 /* ---------------------------
-   RENDER STEPS CLEANLY
+   RENDER STEPS CLEANLY WITH IMAGES
 ---------------------------- */
-
 function renderSteps(steps) {
   results.innerHTML = "";
-
   const list = document.createElement("ol");
 
   steps.forEach(step => {
     const li = document.createElement("li");
 
-    // Remove numbering if AI included it
-    const cleanStep = step.replace(/^\d+\.\s*/, "");
+    const descDiv = document.createElement("div");
+    descDiv.className = "step-description";
+    descDiv.innerHTML = `<strong>${step.entity}</strong>: ${step.description}`;
+    li.appendChild(descDiv);
 
-    li.textContent = cleanStep;
+    if (step.image) {
+      const img = document.createElement("img");
+      img.src = step.image;
+      img.alt = step.entity;
+      img.className = "step-image";
+      li.appendChild(img);
+    }
+
     list.appendChild(li);
   });
 

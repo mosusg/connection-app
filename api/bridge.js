@@ -90,6 +90,7 @@ Rules:
 - Descriptions should be ${descriptionStyle}
 - Step 1 must be "${topicA}"
 - Step ${stepCount} must be "${topicB}"
+- Make sure transitions are clear and logical avoid extreme jumps when possible.
 
 Format:
 1. Entity – description

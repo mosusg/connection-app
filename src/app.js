@@ -1,13 +1,13 @@
 document.getElementById('generate').onclick = async () => {
   const topicA = document.getElementById('topicA').value.trim();
   const topicB = document.getElementById('topicB').value.trim();
+  const resultsDiv = document.getElementById('results');
 
   if (!topicA || !topicB) {
     alert("Please enter both topics!");
     return;
   }
 
-  const resultsDiv = document.getElementById('results');
   resultsDiv.textContent = "Generating...";
 
   try {
@@ -21,13 +21,13 @@ document.getElementById('generate').onclick = async () => {
     resultsDiv.textContent = JSON.stringify(data, null, 2);
 
   } catch (err) {
-    console.error(err);
-    resultsDiv.textContent = "Error generating bridge. Showing example data.";
+    console.error("Fetch error:", err);
+    resultsDiv.textContent = "Error fetching bridge. Showing fallback data.";
     resultsDiv.textContent = JSON.stringify(exampleBridge(topicA, topicB), null, 2);
   }
 };
 
-// Fallback example if AI fails
+// Fallback JSON if API fails
 function exampleBridge(a, b) {
   return [
     { step: 1, entity: a, description: `Start with ${a}`, connection_type: "start" },

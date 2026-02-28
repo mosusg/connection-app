@@ -50,7 +50,7 @@ button:hover {
   width: 100%;
   appearance: none;
   height: 6px;
-  border-radius: 4px;
+  border-radius: 15px;
   background: linear-gradient(90deg, #4a6cf7, #9f7aea);
   outline: none;
   transition: background 0.3s ease;

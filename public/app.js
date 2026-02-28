@@ -5,39 +5,61 @@ const depthLabel = document.getElementById("depthLabel");
 const results = document.getElementById("results");
 const button = document.getElementById("generateBtn");
 
-const depthMap = {
-  1: "minimal",
-  2: "concise",
-  3: "balanced",
-  4: "detailed",
-  5: "deep",
-  6: "analytical",
-  7: "comprehensive"
-};
+/* ---------------------------
+   DEPTH ZONE MAPPING
+---------------------------- */
 
-const labelMap = {
-  1: "Minimal (Very Short)",
-  2: "Concise",
-  3: "Balanced",
-  4: "Detailed",
-  5: "Deep",
-  6: "Analytical",
-  7: "Comprehensive (Very In-Depth)"
-};
+function getDepthFromSlider(value) {
+  const v = Number(value);
 
-slider.addEventListener("input", () => {
-  depthLabel.classList.add("updating");
+  if (v < 15) return "minimal";
+  if (v < 30) return "concise";
+  if (v < 50) return "balanced";
+  if (v < 65) return "detailed";
+  if (v < 80) return "deep";
+  if (v < 92) return "analytical";
+  return "comprehensive";
+}
 
-  setTimeout(() => {
-    depthLabel.textContent = labelMap[slider.value];
-    depthLabel.classList.remove("updating");
-  }, 100);
-});
+function getLabel(depth) {
+  switch (depth) {
+    case "minimal": return "Minimal";
+    case "concise": return "Concise";
+    case "balanced": return "Balanced";
+    case "detailed": return "Detailed";
+    case "deep": return "Deep";
+    case "analytical": return "Analytical";
+    case "comprehensive": return "Comprehensive";
+  }
+}
+
+/* ---------------------------
+   SMOOTH SLIDER BEHAVIOR
+---------------------------- */
+
+function updateSliderVisual() {
+  const percent = slider.value;
+  slider.style.background =
+    `linear-gradient(90deg, #4a6cf7 ${percent}%, #ddd ${percent}%)`;
+
+  const depth = getDepthFromSlider(percent);
+  depthLabel.textContent = getLabel(depth);
+}
+
+// Initialize slider UI
+updateSliderVisual();
+
+// Update continuously as user drags
+slider.addEventListener("input", updateSliderVisual);
+
+/* ---------------------------
+   GENERATE BRIDGE
+---------------------------- */
 
 button.addEventListener("click", async () => {
   const topicA = topicAInput.value.trim();
   const topicB = topicBInput.value.trim();
-  const depth = depthMap[slider.value];
+  const depth = getDepthFromSlider(slider.value);
 
   if (!topicA || !topicB) {
     results.innerHTML = `<div class="error">Please enter both topics.</div>`;
@@ -73,13 +95,21 @@ button.addEventListener("click", async () => {
   }
 });
 
+/* ---------------------------
+   RENDER STEPS CLEANLY
+---------------------------- */
+
 function renderSteps(steps) {
   results.innerHTML = "";
+
   const list = document.createElement("ol");
 
   steps.forEach(step => {
     const li = document.createElement("li");
+
+    // Remove numbering if AI included it
     const cleanStep = step.replace(/^\d+\.\s*/, "");
+
     li.textContent = cleanStep;
     list.appendChild(li);
   });

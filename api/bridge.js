@@ -20,19 +20,19 @@ export default async function handler(req, res) {
 
   switch (depth) {
     case "minimal":
-      stepCount = 8;
+      stepCount = 4;
       descriptionStyle = "1 short sentence.";
       maxTokens = 250;
       break;
 
     case "concise":
-      stepCount = 8;
+      stepCount = 6;
       descriptionStyle = "1–2 sentences.";
       maxTokens = 350;
       break;
 
     case "balanced":
-      stepCount = 10;
+      stepCount = 8;
       descriptionStyle = "2 sentences.";
       maxTokens = 450;
       break;

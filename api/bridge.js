@@ -1,5 +1,6 @@
+// /api/bridge.js
 export default async function handler(req, res) {
-  console.log("Handler called");  // Step 1: function triggered
+  console.log("Handler called");
 
   if (req.method !== "POST") {
     console.log("Invalid method:", req.method);
@@ -14,49 +15,51 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Both topics are required." });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    console.log("No GEMINI_API_KEY found — using fallback");
+    console.log("No OPENAI_API_KEY found — using fallback");
     return res.status(200).json(generateFallback(topicA, topicB));
   }
 
-  console.log("Gemini API key found, attempting API call...");
+  console.log("OpenAI API key found, attempting API call...");
 
   try {
-    const response = await fetch(
-      "https://gemini.googleapis.com/v1/models/gemini-2.5-flash:generateText",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          prompt: `Create a 5-step bridge connecting "${topicA}" to "${topicB}". Return JSON array with objects: {step, entity, description, connection_type}`,
-          max_output_tokens: 500
-        })
-      }
-    );
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo", // GPT-3.5
+        messages: [
+          { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
+          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps as a JSON array with {step, entity, description, connection_type}` }
+        ],
+        temperature: 0.8
+      })
+    });
 
     console.log("Raw response status:", response.status);
+    const data = await response.json();
+    console.log("OpenAI raw response:", data);
 
-    const text = await response.text();
-    console.log("Raw response text:", text);
-
-    // Try to parse JSON safely
-    let data;
+    // Attempt to parse AI output if it's in text
+    let bridge;
     try {
-      data = JSON.parse(text);
-      console.log("Parsed JSON:", data);
+      // The model might return text, so try to parse JSON from the first message content
+      const text = data.choices?.[0]?.message?.content || "";
+      bridge = JSON.parse(text);
+      console.log("Parsed JSON bridge:", bridge);
     } catch (err) {
-      console.error("Failed to parse JSON, returning fallback:", err);
-      data = generateFallback(topicA, topicB);
+      console.error("Failed to parse JSON from OpenAI response, using fallback:", err);
+      bridge = generateFallback(topicA, topicB);
     }
 
-    return res.status(200).json(data);
+    return res.status(200).json(bridge);
 
   } catch (err) {
-    console.error("Gemini API call failed:", err);
+    console.error("OpenAI API call failed:", err);
     return res.status(200).json(generateFallback(topicA, topicB));
   }
 }

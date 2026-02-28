@@ -5,14 +5,14 @@ export default async function handler(req, res) {
   console.log("Handler called");
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).send("Method Not Allowed");
   }
 
   const { topicA, topicB } = req.body;
   console.log("Received topics:", topicA, topicB);
 
   if (!topicA || !topicB) {
-    return res.status(400).json({ error: "Both topics are required." });
+    return res.status(400).send("Both topics are required.");
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
@@ -33,23 +33,23 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content: "You are an assistant creating a 10-step bridge connecting two topics. Each step should be a specific, real, verifiable person, place, object, or event."
+            content: "You are an assistant creating a 10-step bridge connecting two topics. Each step should be a specific person, place, object, or event."
           },
           {
             role: "user",
-            content: `Connect "${topicA}" to "${topicB}" in exactly 10 steps.
-1. Each step must use a specific, real, verifiable person, place, object, or event. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians).
-2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful.
-3. Each step must progress linearly toward the final topic, with no loops, backtracking, or steps that do not advance the bridge.
-4. Clearly describe how each step connects to the previous step, emphasizing real-world causal, historical, or contextual relationships.
+            content: `Connect "${topicA}" to "${topicB}" in exactly 10 steps. 
+1. Each step must use a specific, real, verifiable person, place, object, or event. Do not use general or abstract concepts (e.g., science, technology, history) or vague groups (e.g., developers, musicians). 
+2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful. 
+3. Each step must progress linearly toward the final topic, with no loops, backtracking, or steps that do not advance the bridge. 
+4. Clearly describe how each step connects to the previous step, emphasizing real-world causal, historical, or contextual relationships. 
 5. Return strict, valid JSON only:
    - Use double quotes for all keys and string values.
-   - Do not include single quotes.
-   - Do not include Markdown, code fences, or backticks.
+   - Do not use single quotes.
+   - Do not include any Markdown, code fences, or backticks.
    - No extra text outside the JSON array.
-6. Each object should have: step (number), entity (string), description (string), connection_type (start, link, end).
-7. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end).
-8. Avoid generic filler entities — each step must be meaningful and precise.`
+Each object should have: step (number), entity (string), description (string), connection_type (start, link, end). 
+6. Step 1 must be "${topicA}" (start), and step 10 must be "${topicB}" (end). 
+7. Avoid generic filler entities — each step must be meaningful and precise.`
           }
         ],
         temperature: 0.8,
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
     try {
       let rawOutput = data.choices[0].message.content;
 
-      // Remove Markdown / backticks
+      // Remove any Markdown/code fences or leading/trailing backticks
       rawOutput = rawOutput
         .replace(/^```json\s*/i, "")
         .replace(/^```\s*/i, "")
@@ -78,14 +78,8 @@ export default async function handler(req, res) {
         .replace(/`+$/i, "")
         .trim();
 
-      // Parse with JSON5 for robustness
+      // Use JSON5 to parse in case GPT output has minor issues
       bridge = JSON5.parse(rawOutput);
-
-      // Quick sanity check: ensure 10 steps
-      if (!Array.isArray(bridge) || bridge.length !== 10) {
-        console.warn("Bridge length invalid, falling back.");
-        return res.status(200).json(generateFallback(topicA, topicB));
-      }
 
     } catch (parseErr) {
       console.error("Failed to parse AI output as JSON:", parseErr);

@@ -3,16 +3,14 @@ export default async function handler(req, res) {
   console.log("Handler called");
 
   if (req.method !== "POST") {
-    console.log("Invalid method:", req.method);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).send("Method Not Allowed");
   }
 
   const { topicA, topicB } = req.body;
   console.log("Received topics:", topicA, topicB);
 
   if (!topicA || !topicB) {
-    console.log("Missing topic(s)");
-    return res.status(400).json({ error: "Both topics are required." });
+    return res.status(400).send("Both topics are required.");
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
@@ -21,43 +19,36 @@ export default async function handler(req, res) {
     return res.status(200).json(generateFallback(topicA, topicB));
   }
 
-  console.log("OpenAI API key found, attempting API call...");
-
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    model: "gpt-3.5-turbo",
-    messages: [
-      { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
-      { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps as JSON.` }
-    ],
-    temperature: 0.8,
-    max_tokens: 300   // <-- limits response to ~300 tokens
-  })
-});
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { role: "system", content: "You are an assistant creating a 10-step bridge connecting two topics." },
+          { role: "user", content: `Connect "${topicA}" to "${topicB}" in 10 steps as a numbered list of steps, each with entity and description. Return plain text.` }
+        ],
+        temperature: 0.8,
+        max_tokens: 300
+      })
+    });
 
-    console.log("Raw response status:", response.status);
-    const data = await response.json();
-    console.log("OpenAI raw response:", data);
-
-    // Attempt to parse AI output if it's in text
-    let bridge;
-    try {
-      // The model might return text, so try to parse JSON from the first message content
-      const text = data.choices?.[0]?.message?.content || "";
-      bridge = JSON.parse(text);
-      console.log("Parsed JSON bridge:", bridge);
-    } catch (err) {
-      console.error("Failed to parse JSON from OpenAI response, using fallback:", err);
-      bridge = generateFallback(topicA, topicB);
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("OpenAI API error:", text);
+      return res.status(200).json(generateFallback(topicA, topicB));
     }
 
-    return res.status(200).json(bridge);
+    const data = await response.json();
+    const textOutput = data.choices?.[0]?.message?.content || "";
+    console.log("AI Output:", textOutput);
+
+    // Return text to frontend
+    return res.status(200).json({ bridge: textOutput });
 
   } catch (err) {
     console.error("OpenAI API call failed:", err);
@@ -65,20 +56,13 @@ export default async function handler(req, res) {
   }
 }
 
-// Dynamic fallback generator
+// Fallback: returns plain text bridge
 function generateFallback(a, b) {
-  console.log("Generating dynamic fallback bridge");
-  const bridge = [];
-  bridge.push({ step: 1, entity: a, description: `Start with ${a}`, connection_type: "start" });
+  console.log("Generating fallback bridge");
+  let text = `1. ${a} – Start with ${a}\n`;
   for (let i = 2; i <= 9; i++) {
-    bridge.push({
-      step: i,
-      entity: `Entity ${i - 1}`,
-      description: `Connects step ${i - 1} to step ${i}`,
-      connection_type: "link"
-    });
+    text += `${i}. Entity ${i-1} – Connects step ${i-1} to step ${i}\n`;
   }
-  bridge.push({ step: 10, entity: b, description: `End with ${b}`, connection_type: "end" });
-  console.log("Fallback bridge generated:", bridge);
-  return bridge;
+  text += `10. ${b} – End with ${b}`;
+  return { bridge: text };
 }

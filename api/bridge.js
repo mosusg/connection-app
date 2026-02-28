@@ -40,7 +40,13 @@ export default async function handler(req, res) {
             2. Avoid any "name-based shortcuts" or pun connections (e.g., Apple (fruit) → Apple Inc.) — connections must be logically or historically meaningful. 
             3. Each step must **progress linearly toward the final topic**, with no loops, backtracking, or steps that do not advance the bridge. 
             4. Clearly describe **how each step connects to the previous step**, emphasizing real-world causal, historical, or contextual relationships. 
-            5. Return **exact JSON only** (no markdown, no code fences). Each object should have: 
+            5. Return **strict, valid JSON only** (no markdown, no code fences).
+              - Use double quotes for all keys and string values.
+              - No single quotes.
+              - No trailing commas.
+              - No Markdown or code fences.
+              - No extra text.
+            Each object should have: 
               - step (number), 
               - entity (string), 
               - description (string), 

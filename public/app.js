@@ -88,17 +88,16 @@ button.addEventListener("click", async () => {
 function renderSteps(steps) {
   results.innerHTML = "";
 
-  const list = document.createElement("div");
-  list.className = "timeline";
+  const list = document.createElement("ol");
 
-  steps.forEach((step, i) => {
+  steps.forEach(step => {
+    const li = document.createElement("li");
+
+    // Step container
     const container = document.createElement("div");
     container.className = "step-container";
 
-    // Alternate left/right
-    container.classList.add(i % 2 === 0 ? "left" : "right");
-
-    // Image
+    // Image (if available)
     if (step.image) {
       const img = document.createElement("img");
       img.src = step.image;
@@ -110,10 +109,13 @@ function renderSteps(steps) {
     // Text
     const text = document.createElement("div");
     text.className = "step-text";
-    text.textContent = step.entity + " – " + step.description;
-    container.appendChild(text);
+    // Remove numbering from AI output if included
+    const cleanStep = step.entity + " – " + step.description;
+    text.textContent = cleanStep;
 
-    list.appendChild(container);
+    container.appendChild(text);
+    li.appendChild(container);
+    list.appendChild(li);
   });
 
   results.appendChild(list);

@@ -170,43 +170,50 @@ li {
   align-items: flex-start;
 }
 
-/* Left steps: shift further left and text aligned right */
 .step-container.left {
-  left: -55%; /* more to the left */
-  text-align: right;
-  flex-direction: row-reverse;
+  flex-direction: row-reverse;  /* image on the left, text on the right */
+  justify-content: flex-start;  /* align items so text doesn't overlap line */
+  gap: 20px;                    /* spacing between image and text */
 }
 
-/* Right steps */
 .step-container.right {
-  left: 55%;
-  text-align: left;
+  flex-direction: row;          /* image on the right, text on the left */
+  justify-content: flex-start;
+  gap: 20px;
 }
+
 
 /* Remove dots completely */
 
-/* Step images */
+/* Image sizing */
 .step-image {
-  width: 100px;  /* slightly bigger */
-  height: 100px;
+  width: 90px;                  /* keep images uniform and smaller */
+  height: 90px;
   object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-  margin: 0 10px;
+  border-radius: 10px;
+  flex-shrink: 0;               /* prevent images from shrinking */
 }
 
-/* Step text */
+/* Step text box styling */
 .step-text {
-  background: #f4f6fc;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-  max-width: 350px; /* wider boxes */
+  max-width: 480px;       /* make text bubbles wider */
+  width: auto;            /* allow flexible width */
+  padding: 10px 15px;     /* reduce vertical padding to save height */
+  font-size: 15px;        /* slightly smaller text for compactness */
+  line-height: 1.4;       /* reduce vertical spacing in text */
   word-wrap: break-word;
+  border-radius: 12px;    
+  background: #f1f5f9;    /* light bubble color */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .step-container:hover .step-text {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
+}
+
+/* Timeline adjustments */
+.timeline::before {
+  left: 50px;                   /* push timeline line right to avoid overlap */
 }

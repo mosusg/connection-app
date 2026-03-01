@@ -160,3 +160,5 @@ async function fetchWikimediaImage(entity) {
     return null;
   }
 }
+
+console.log(entityName);

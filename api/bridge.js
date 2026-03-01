@@ -148,37 +148,15 @@ ${stepCount}. Entity – description
 // ------------------ Helpers ------------------ //
 async function fetchWikimediaImage(entity) {
   const query = encodeURIComponent(entity);
+  const url = `https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=search&gsrsearch=${query}&gsrlimit=1&gsrnamespace=6&iiprop=url&iiurlwidth=300&origin=*`;
 
   try {
-    // 1️⃣ Search for pages matching entity
-    const searchUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${query}&srlimit=1`;
-    const searchRes = await fetch(searchUrl);
-    const searchData = await searchRes.json();
-    const firstPage = searchData?.query?.search?.[0];
-    if (!firstPage) return null;
-
-    const pageTitle = encodeURIComponent(firstPage.title);
-
-    // 2️⃣ Get images for that page
-    const imagesUrl = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&titles=${pageTitle}&prop=images`;
-    const imagesRes = await fetch(imagesUrl);
-    const imagesData = await imagesRes.json();
-
-    const pages = imagesData.query?.pages;
+    const res = await fetch(url);
+    const data = await res.json();
+    const pages = data.query?.pages;
     if (!pages) return null;
     const page = Object.values(pages)[0];
-    const images = page.images;
-    if (!images || !images.length) return null;
-
-    // 3️⃣ Get URL of first image
-    const imageTitle = encodeURIComponent(images[0].title);
-    const imageInfoUrl = `https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&titles=${imageTitle}&prop=imageinfo&iiprop=url`;
-    const imageInfoRes = await fetch(imageInfoUrl);
-    const imageInfoData = await imageInfoRes.json();
-
-    const imagePage = Object.values(imageInfoData.query?.pages || {})[0];
-    return imagePage?.imageinfo?.[0]?.url || null;
-
+    return page.imageinfo?.[0]?.thumburl || page.imageinfo?.[0]?.url || null;
   } catch (err) {
     console.error(`Wikimedia image fetch error for "${entity}":`, err);
     return null;

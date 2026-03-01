@@ -197,6 +197,7 @@ li {
 
 /* Step text */
 .step-text {
+max-width: 450px;
   background: #f4f6fc;
   padding: 15px;
   border-radius: 8px;

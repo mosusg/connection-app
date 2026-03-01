@@ -172,7 +172,7 @@ li {
 
 /* Left steps: shift further left and text aligned right */
 .step-container.left {
-  left: -65%; /* more to the left */
+  left: -105%; /* more to the left */
   text-align: right;
   flex-direction: row-reverse;
 }

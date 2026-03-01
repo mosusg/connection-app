@@ -36,6 +36,12 @@ function getLabel(depth) {
 ---------------------------- */
 function updateSliderVisual() {
   const value = Number(slider.value);
+  const min = Number(slider.min) || 0;
+  const max = Number(slider.max) || 100;
+
+  // Calculate percentage properly based on min/max
+  const percent = ((value - min) / (max - min)) * 100;
+
   
   // Gradient stops dynamically
   slider.style.background = `linear-gradient(90deg, #339420 ${value}%, #ddd ${value}%)`;

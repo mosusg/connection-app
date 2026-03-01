@@ -145,7 +145,7 @@ ${stepCount}. Entity – description
 
 // ------------------ Helpers ------------------ //
 async function fetchWikimediaImage(entity) {
-  //if (!entity) return null;
+  if (!entity) return null;
 
   const query = encodeURIComponent(entity);
   const url = `https://commons.wikimedia.org/w/api.php?origin=*&action=query&format=json&generator=search&gsrnamespace=6&gsrsearch=${query}&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=300`;

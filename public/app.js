@@ -89,21 +89,14 @@ function renderSteps(steps) {
   results.innerHTML = "";
 
   const list = document.createElement("div");
-  list.className = "timeline"; // use div now for full control
+  list.className = "timeline";
 
   steps.forEach((step, i) => {
     const container = document.createElement("div");
     container.className = "step-container";
 
-    // Alternate left/right but keep alignment neat
+    // Alternate left/right
     container.classList.add(i % 2 === 0 ? "left" : "right");
-
-    // Add dot for start/end only
-    const dot = document.createElement("div");
-    dot.className = "timeline-dot";
-    if (i === 0) dot.classList.add("start-dot");
-    if (i === steps.length - 1) dot.classList.add("end-dot");
-    container.appendChild(dot);
 
     // Image
     if (step.image) {
@@ -118,8 +111,8 @@ function renderSteps(steps) {
     const text = document.createElement("div");
     text.className = "step-text";
     text.textContent = step.entity + " – " + step.description;
-
     container.appendChild(text);
+
     list.appendChild(container);
   });
 

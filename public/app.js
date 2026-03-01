@@ -88,22 +88,24 @@ button.addEventListener("click", async () => {
 function renderSteps(steps) {
   results.innerHTML = "";
 
-  const list = document.createElement("ol");
-  list.className = "timeline"; // for central vertical line styling
+  const list = document.createElement("div");
+  list.className = "timeline"; // use div now for full control
 
   steps.forEach((step, i) => {
-    const li = document.createElement("li");
-
-    // Step container
     const container = document.createElement("div");
-    container.className = "step-container " + (i % 2 === 0 ? "left" : "right"); // alternate left/right
+    container.className = "step-container";
 
-    // Timeline dot
+    // Alternate left/right but keep alignment neat
+    container.classList.add(i % 2 === 0 ? "left" : "right");
+
+    // Add dot for start/end only
     const dot = document.createElement("div");
-    dot.className = "step-dot";
+    dot.className = "timeline-dot";
+    if (i === 0) dot.classList.add("start-dot");
+    if (i === steps.length - 1) dot.classList.add("end-dot");
     container.appendChild(dot);
 
-    // Image (if available)
+    // Image
     if (step.image) {
       const img = document.createElement("img");
       img.src = step.image;
@@ -115,14 +117,10 @@ function renderSteps(steps) {
     // Text
     const text = document.createElement("div");
     text.className = "step-text";
-
-    // Preserve your previous cleanStep format
-    const cleanStep = step.entity + " – " + step.description;
-    text.textContent = cleanStep;
+    text.textContent = step.entity + " – " + step.description;
 
     container.appendChild(text);
-    li.appendChild(container);
-    list.appendChild(li);
+    list.appendChild(container);
   });
 
   results.appendChild(list);

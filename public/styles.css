@@ -149,32 +149,23 @@ li {
   line-height: 1.5;
 }
 
-/* Vertical timeline */
+/* Timeline central line */
 .timeline {
   position: relative;
-  margin: 30px 0;
-  padding-left: 20px;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
   width: 4px;
+  margin: 30px auto;
   background: #4a6cf7;
-  transform: translateX(-50%);
   border-radius: 2px;
+  min-height: 80%; /* ensures line spans most of container */
 }
 
+/* Step containers */
 .step-container {
   position: relative;
   width: 45%;
   padding: 10px 20px;
-  margin: 20px 0;
+  margin: 40px 0;
   display: flex;
-  gap: 15px;
   align-items: flex-start;
 }
 
@@ -189,6 +180,25 @@ li {
   text-align: left;
 }
 
+/* Dot only for start/end */
+.timeline-dot {
+  position: absolute;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #4a6cf7;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.timeline-dot.start-dot,
+.timeline-dot.end-dot {
+  display: block;
+}
+
+/* Step images */
 .step-image {
   width: 80px;
   height: 80px;
@@ -197,24 +207,13 @@ li {
   flex-shrink: 0;
 }
 
+/* Step text */
 .step-text {
   background: #f4f6fc;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.step-dot {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 14px;
-  height: 14px;
-  background: white;
-  border: 3px solid #4a6cf7;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+  max-width: 250px;
 }
 
 .step-container:hover .step-text {

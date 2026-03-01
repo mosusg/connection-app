@@ -145,16 +145,23 @@ ${stepCount}. Entity – description
 
 // ------------------ Helpers ------------------ //
 async function fetchWikimediaImage(entity) {
+  if (!entity) return null;
+
   const query = encodeURIComponent(entity);
-  const url = `https://commons.wikimedia.org/w/api.php?action=query&format=json&prop=imageinfo&generator=search&gsrsearch=${query}&gsrlimit=1&gsrnamespace=6&iiprop=url&iiurlwidth=300&origin=*`;
+  const url = `https://commons.wikimedia.org/w/api.php?origin=*&action=query&format=json&generator=search&gsrnamespace=6&gsrsearch=${query}&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=300`;
 
   try {
     const res = await fetch(url);
     const data = await res.json();
     const pages = data.query?.pages;
     if (!pages) return null;
-    const page = Object.values(pages)[0];
-    return page.imageinfo?.[0]?.thumburl || page.imageinfo?.[0]?.url || null;
+
+    // Sort or filter pages for valid image
+    const validPage = Object.values(pages).find(
+      p => isValidImageFile(p.title) && p.imageinfo?.[0]?.url
+    );
+
+    return validPage?.imageinfo?.[0]?.thumburl || validPage?.imageinfo?.[0]?.url || null;
   } catch (err) {
     console.error(`Wikimedia image fetch error for "${entity}":`, err);
     return null;

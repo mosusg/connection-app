@@ -128,7 +128,8 @@ ${stepCount}. Entity – description
     // 3️⃣ Fetch images for each step
     await Promise.all(
       steps.map(async step => {
-        step.image = await fetchWikimediaImage(step.entity);
+        const entityName = step.entity.split("–")[0].split(":")[0].trim();
+        step.image = await fetchWikimediaImage(entityName);
       })
     );
 

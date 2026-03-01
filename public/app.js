@@ -89,13 +89,19 @@ function renderSteps(steps) {
   results.innerHTML = "";
 
   const list = document.createElement("ol");
+  list.className = "timeline"; // for central vertical line styling
 
-  steps.forEach(step => {
+  steps.forEach((step, i) => {
     const li = document.createElement("li");
 
     // Step container
     const container = document.createElement("div");
-    container.className = "step-container";
+    container.className = "step-container " + (i % 2 === 0 ? "left" : "right"); // alternate left/right
+
+    // Timeline dot
+    const dot = document.createElement("div");
+    dot.className = "step-dot";
+    container.appendChild(dot);
 
     // Image (if available)
     if (step.image) {
@@ -109,7 +115,8 @@ function renderSteps(steps) {
     // Text
     const text = document.createElement("div");
     text.className = "step-text";
-    // Remove numbering from AI output if included
+
+    // Preserve your previous cleanStep format
     const cleanStep = step.entity + " – " + step.description;
     text.textContent = cleanStep;
 

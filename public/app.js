@@ -38,7 +38,7 @@ function updateSliderVisual() {
   const value = Number(slider.value);
   
   // Gradient stops dynamically
-  slider.style.background = `linear-gradient(90deg, #4a6cf7 ${value}%, #ddd ${value}%)`;
+  slider.style.background = `linear-gradient(90deg, #45c12c ${value}%, #ddd ${value}%)`;
 
   const depth = getDepthFromSlider(value);
   depthLabel.textContent = getLabel(depth);

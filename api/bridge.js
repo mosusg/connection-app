@@ -82,8 +82,6 @@ Rules:
 - Each step must logically connect to the previous step.
 - Descriptions should be ${descriptionStyle}
 - Step 1 must be "${topicA}"
-- "${topicB}" should only appear in the final step
-- Never repeat entities across steps
 - Step ${stepCount} must be "${topicB}"
 - Make sure transitions are clear and logical, avoid extreme jumps when possible.
 

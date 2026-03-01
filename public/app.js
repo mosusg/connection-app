@@ -97,43 +97,19 @@ function renderSteps(steps) {
     const container = document.createElement("div");
     container.className = "step-container";
 
-    // Image container (spinner first)
-    const imgContainer = document.createElement("span");
-    imgContainer.className = "step-image-container";
-
+    // Image (if available)
     if (step.image) {
-      // Show spinner while loading
-      const spinner = document.createElement("span");
-      spinner.className = "spinner";
-      imgContainer.appendChild(spinner);
-      container.appendChild(imgContainer);
-
-      // Load image asynchronously
-      const img = new Image();
+      const img = document.createElement("img");
       img.src = step.image;
       img.alt = step.entity;
       img.className = "step-image";
-
-      img.onload = () => {
-        imgContainer.replaceChild(img, spinner);
-      };
-
-      img.onerror = () => {
-        const placeholder = document.createElement("span");
-        placeholder.className = "placeholder";
-        imgContainer.replaceChild(placeholder, spinner);
-      };
-    } else {
-      // If no image URL, show placeholder immediately
-      const placeholder = document.createElement("span");
-      placeholder.className = "placeholder";
-      imgContainer.appendChild(placeholder);
-      container.appendChild(imgContainer);
+      container.appendChild(img);
     }
 
     // Text
     const text = document.createElement("div");
     text.className = "step-text";
+    // Remove numbering from AI output if included
     const cleanStep = step.entity + " – " + step.description;
     text.textContent = cleanStep;
 

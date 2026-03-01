@@ -97,16 +97,16 @@ function renderSteps(steps) {
     const container = document.createElement("div");
     container.className = "step-container";
 
-    // Image container (always append first)
+    // Image container (spinner first)
     const imgContainer = document.createElement("span");
     imgContainer.className = "step-image-container";
-    container.appendChild(imgContainer);
 
     if (step.image) {
-      // Show spinner first
+      // Show spinner while loading
       const spinner = document.createElement("span");
       spinner.className = "spinner";
       imgContainer.appendChild(spinner);
+      container.appendChild(imgContainer);
 
       // Load image asynchronously
       const img = new Image();
@@ -124,10 +124,11 @@ function renderSteps(steps) {
         imgContainer.replaceChild(placeholder, spinner);
       };
     } else {
-      // If no image, show placeholder immediately
+      // If no image URL, show placeholder immediately
       const placeholder = document.createElement("span");
       placeholder.className = "placeholder";
       imgContainer.appendChild(placeholder);
+      container.appendChild(imgContainer);
     }
 
     // Text

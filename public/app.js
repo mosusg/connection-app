@@ -35,14 +35,16 @@ function getLabel(depth) {
    SMOOTH SLIDER BEHAVIOR
 ---------------------------- */
 function updateSliderVisual() {
-  const percent = slider.value;
-  slider.style.background =
-    `linear-gradient(90deg, #4a6cf7 ${percent}%, #ddd ${percent}%)`;
+  const value = Number(slider.value);
+  
+  // Gradient stops dynamically
+  slider.style.background = `linear-gradient(90deg, #4a6cf7 ${value}%, #ddd ${value}%)`;
 
-  const depth = getDepthFromSlider(percent);
+  const depth = getDepthFromSlider(value);
   depthLabel.textContent = getLabel(depth);
 }
 
+// Initialize
 updateSliderVisual();
 slider.addEventListener("input", updateSliderVisual);
 

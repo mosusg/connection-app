@@ -48,45 +48,54 @@ button:hover {
 /* Smooth Slider Styling */
 #depthSlider {
   width: 100%;
-  appearance: none;
-  height: 6px;
-  border-radius: 15px;
-  background: linear-gradient(90deg, #4a6cf7, #9f7aea);
+  height: 8px;
+  border-radius: 4px;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, #4a6cf7 40%, #ddd 40%);
   outline: none;
   transition: background 0.3s ease;
 }
 
-/* Slider Thumb */
+/* WebKit Thumb */
 #depthSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: white;
-  border: 2px solid #4a6cf7;
+  border: 3px solid #4a6cf7;
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 #depthSlider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
+  border-color: #3a57d7;
 }
 
+/* Firefox Thumb */
 #depthSlider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: white;
-  border: 2px solid #4a6cf7;
+  border: 3px solid #4a6cf7;
   border-radius: 50%;
   cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-/* Smooth label animation */
+#depthSlider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  border-color: #3a57d7;
+}
+
+/* Label styling */
 .depth-label {
-  margin-top: 10px;
+  margin-top: 8px;
   font-weight: bold;
-  opacity: 1;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  text-align: center;
+  font-size: 16px;
 }
 
 .depth-label.updating {

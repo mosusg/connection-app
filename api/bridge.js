@@ -90,7 +90,7 @@ Rules:
 - Justify each step's connection to the previous one by choosing a relevant entity rather than picking a random entity and justifying in the description.
 
 Format:
-1. Entity – description
+Entity – description
 ...
 ${stepCount}. Entity – description
 `

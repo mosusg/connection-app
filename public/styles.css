@@ -154,7 +154,7 @@ li {
 .timeline {
   position: relative;
   width: 4px;
-  margin: 30px auto;
+    margin: 40px 0;
   background: #4a6cf7;
   border-radius: 2px;
   min-height: 80%;
@@ -162,24 +162,20 @@ li {
 
 /* Step containers */
 .step-container {
-  position: relative;
-  width: 50%;
-  padding: 15px 20px;
-  margin: 40px 0;
   display: flex;
   align-items: flex-start;
+  margin: 20px 0;
+  position: relative;
 }
 
 .step-container.left {
-  flex-direction: row-reverse;  /* image on the left, text on the right */
-  justify-content: flex-start;  /* align items so text doesn't overlap line */
-  gap: 20px;                    /* spacing between image and text */
+  flex-direction: row;
+  margin-left: 0; /* ensure it starts at the left margin */
 }
 
 .step-container.right {
-  flex-direction: row;          /* image on the right, text on the left */
-  justify-content: flex-start;
-  gap: 20px;
+  flex-direction: row-reverse;
+  margin-left: 0;
 }
 
 
@@ -187,24 +183,23 @@ li {
 
 /* Image sizing */
 .step-image {
-  width: 90px;                  /* keep images uniform and smaller */
-  height: 90px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 10px;
-  flex-shrink: 0;               /* prevent images from shrinking */
+  flex-shrink: 0;
+  margin-right: 20px; /* spacing between image and text */
 }
 
 /* Step text box styling */
 .step-text {
-  max-width: 480px;       /* make text bubbles wider */
-  width: auto;            /* allow flexible width */
-  padding: 10px 15px;     /* reduce vertical padding to save height */
-  font-size: 15px;        /* slightly smaller text for compactness */
-  line-height: 1.4;       /* reduce vertical spacing in text */
-  word-wrap: break-word;
-  border-radius: 12px;    
-  background: #f1f5f9;    /* light bubble color */
+  max-width: 450px; /* wider */
+  padding: 12px 16px; /* reduce vertical padding slightly */
+  background: #f1f5f9;
+  border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  line-height: 1.4;
+  word-wrap: break-word;
 }
 
 .step-container:hover .step-text {
@@ -213,7 +208,17 @@ li {
   transition: all 0.2s ease;
 }
 
-/* Timeline adjustments */
 .timeline::before {
-  left: 50px;                   /* push timeline line right to avoid overlap */
+  content: "";
+  position: absolute;
+  left: 120px; /* move line right so left images don't overlap */
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #4a6cf7;
+  border-radius: 2px;
+}
+
+.step-container::before {
+  content: none;
 }

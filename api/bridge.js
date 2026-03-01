@@ -86,6 +86,7 @@ Rules:
 - Never repeat entities across steps
 - Step ${stepCount} must be "${topicB}"
 - Make sure transitions are clear and logical, avoid extreme jumps when possible.
+- Justify each step's connection to the previous one by choosing a relevant entity rather than picking a random entity and justifying in the description.
 
 Format:
 1. Entity – description

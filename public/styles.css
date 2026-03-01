@@ -172,7 +172,7 @@ li {
 
 /* Left steps: shift further left and text aligned right */
 .step-container.left {
-  left: -65%; /* more to the left */
+  left: -105%; /* more to the left */
   text-align: right;
   flex-direction: row-reverse;
 }
@@ -198,7 +198,7 @@ li {
 /* Step text */
 .step-text {
   background: #f4f6fc;
-  padding: 60px;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
   max-width: 350px; /* wider boxes */

@@ -71,7 +71,9 @@ export default async function handler(req, res) {
         max_tokens: maxTokens,
         messages: [
           { role: "system", content: "You create smooth, logical bridges between topics." },
-          { role: "user", content: `
+          {
+            role: "user",
+            content: `
 Connect "${topicA}" to "${topicB}" in exactly ${stepCount} numbered steps.
 
 Rules:
@@ -87,7 +89,8 @@ Format:
 1. Entity – description
 ...
 ${stepCount}. Entity – description
-` }
+`
+          }
         ]
       })
     });
@@ -97,30 +100,30 @@ ${stepCount}. Entity – description
     }
 
     const data = await response.json();
-    const text = data?.choices?.[0]?.message?.content?.trim();
+    const rawText = data?.choices?.[0]?.message?.content?.trim() || "";
 
     // 2️⃣ Parse steps
-    let steps = text
-      .split("\n")
-      .map(line => line.trim())
-      .filter(line => /^\d+\./.test(line))
-      .map((line, i) => {
-        const match = line.match(/^\d+\.\s*(.*?)\s*–\s*(.*)$/);
-        return match
-          ? {
-              step: i + 1,
-              entity: match[1].trim(),
-              description: match[2].trim(),
-              connection_type: i === 0 ? "start" : i === stepCount - 1 ? "end" : "link",
-              image: null // placeholder
-            }
-          : null;
-      })
-      .filter(Boolean);
+    const lines = rawText.split("\n").map(l => l.trim()).filter(Boolean);
+    const steps = [];
+    let currentStep = null;
 
-    if (steps.length !== stepCount) {
-      return res.status(500).json({ error: "Invalid bridge format." });
+    for (let line of lines) {
+      const match = line.match(/^(\d+)\.\s*(.+)/);
+      if (match) {
+        if (currentStep) steps.push(currentStep); // push previous step
+        currentStep = {
+          entity: match[2].split("–")[0].trim(),
+          description: match[2].split("–").slice(1).join("–").trim(),
+          image: null
+        };
+      } else if (currentStep) {
+        // Append extra lines to description
+        currentStep.description += " " + line;
+      }
     }
+
+    // Push last step
+    if (currentStep) steps.push(currentStep);
 
     // 3️⃣ Fetch images for each step
     await Promise.all(

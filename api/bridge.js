@@ -77,9 +77,8 @@ export default async function handler(req, res) {
 Connect "${topicA}" to "${topicB}" in exactly ${stepCount} numbered steps.
 
 Rules:
-- **THINK BEFORE YOU WRITE**: Plan the entire bridge before writing. Don't start writing until you have a clear path from start to finish.
 - Each step must be a real, specific person, place, object, or event.
-- No professions, abstract concepts, or indescriptive groups as entities.
+- No abstract concepts.
 - Each step must logically connect to the previous step.
 - Descriptions should be ${descriptionStyle}
 - Step 1 must be "${topicA}"
@@ -87,7 +86,6 @@ Rules:
 - Never repeat entities across steps
 - Step ${stepCount} must be "${topicB}"
 - Make sure transitions are clear and logical, avoid extreme jumps when possible.
-- Explain how the previous step connects to the current step in the description.
 
 Format:
 1. Entity – description

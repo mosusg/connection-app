@@ -30,7 +30,7 @@ input, button {
 }
 
 button {
-  background: #4a6cf7;
+  background: #45c12c;
   color: white;
   border: none;
   cursor: pointer;
@@ -38,7 +38,7 @@ button {
 }
 
 button:hover {
-  background: #3a57d7;
+  background: #45c12c;
 }
 
 .slider-container {
@@ -51,7 +51,7 @@ button:hover {
   height: 8px;
   border-radius: 4px;
   -webkit-appearance: none;
-  background: linear-gradient(90deg, #4a6cf7 40%, #ddd 40%);
+  background: linear-gradient(90deg, #45c12c 40%, #ddd 40%);
   outline: none;
   transition: background 0.3s ease;
 }
@@ -71,7 +71,7 @@ button:hover {
 
 #depthSlider::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  border-color: #3a57d7;
+  border-color: #45c12c;
 }
 
 /* Firefox Thumb */
@@ -79,7 +79,7 @@ button:hover {
   width: 20px;
   height: 20px;
   background: white;
-  border: 3px solid #4a6cf7;
+  border: 3px solid #45c12c;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease;
@@ -87,7 +87,7 @@ button:hover {
 
 #depthSlider::-moz-range-thumb:hover {
   transform: scale(1.2);
-  border-color: #3a57d7;
+  border-color: #45c12c;
 }
 
 /* Label styling */

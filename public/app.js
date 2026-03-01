@@ -87,24 +87,34 @@ button.addEventListener("click", async () => {
 ---------------------------- */
 function renderSteps(steps) {
   results.innerHTML = "";
+
   const list = document.createElement("ol");
 
   steps.forEach(step => {
     const li = document.createElement("li");
 
-    const descDiv = document.createElement("div");
-    descDiv.className = "step-description";
-    descDiv.innerHTML = `<strong>${step.entity}</strong>: ${step.description}`;
-    li.appendChild(descDiv);
+    // Step container
+    const container = document.createElement("div");
+    container.className = "step-container";
 
+    // Image (if available)
     if (step.image) {
       const img = document.createElement("img");
       img.src = step.image;
       img.alt = step.entity;
       img.className = "step-image";
-      li.appendChild(img);
+      container.appendChild(img);
     }
 
+    // Text
+    const text = document.createElement("div");
+    text.className = "step-text";
+    // Remove numbering from AI output if included
+    const cleanStep = step.entity + " – " + step.description;
+    text.textContent = cleanStep;
+
+    container.appendChild(text);
+    li.appendChild(container);
     list.appendChild(li);
   });
 
